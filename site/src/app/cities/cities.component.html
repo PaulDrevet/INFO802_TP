@@ -1,12 +1,12 @@
 <div class="flex m-10 gap-6">
   <div class="flex items-center">
     <p class="pr-2">Ville de départ : </p>
-    <p-autoComplete [(ngModel)]="selectedCityStart" [suggestions]="suggestionsStart" (completeMethod)="filterCountryStart($event)"></p-autoComplete>
+    <p-autoComplete [(ngModel)]="selectedCityStart" [suggestions]="suggestions" (completeMethod)="filterCountry($event)"></p-autoComplete>
   </div>
 
   <div class="flex items-center">
     <p class="pr-2">Destination : </p>
-    <p-autoComplete [(ngModel)]="selectedCityEnd" [suggestions]="suggestionsEnd" (completeMethod)="filterCountryEnd($event)"></p-autoComplete>
+    <p-autoComplete [(ngModel)]="selectedCityEnd" [suggestions]="suggestions" (completeMethod)="filterCountry($event)"></p-autoComplete>
   </div>
 </div>
 

@@ -27,8 +27,7 @@ interface AutoCompleteCompleteEvent {
 })
 export class CitiesComponent implements OnInit{
   cities: any;
-  suggestionsStart: any;
-  suggestionsEnd: any;
+  suggestions: any;
   selectedCityStart: any;
   selectedCityEnd: any;
 
@@ -39,10 +38,9 @@ export class CitiesComponent implements OnInit{
       "Spain",
       "United Kingdom"
     ]
-
   }
 
-  filterCountryStart(event: AutoCompleteCompleteEvent) {
+  filterCountry(event: AutoCompleteCompleteEvent) {
     let filtered: any[] = [];
     let query = event.query;
 
@@ -53,20 +51,7 @@ export class CitiesComponent implements OnInit{
       }
     }
     console.log(filtered);
-    this.suggestionsStart = filtered;
+    this.suggestions = filtered;
   }
 
-  filterCountryEnd(event: AutoCompleteCompleteEvent) {
-    let filtered: any[] = [];
-    let query = event.query;
-
-    for (let i = 0; i < (this.cities as any[]).length; i++) {
-      let country = (this.cities as any[])[i];
-      if (country.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-        filtered.push(country);
-      }
-    }
-    console.log(filtered);
-    this.suggestionsEnd = filtered;
-  }
 }
