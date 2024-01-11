@@ -1,10 +1,12 @@
-<div>
-  <p-listbox [options]="vehicleList" [listStyle]="{ 'max-height': getMaxHeight(), overflow: 'auto', width: '30rem' }" [style]="{width : '30rem'}">
+<div class="p-2">
+  <p-listbox class="border border-2" [options]="vehicleList" [listStyle]="{ 'max-height': getMaxHeight(), overflow: 'auto', width: '30rem' }"
+             [style]="{width : '30rem'}" [(ngModel)]="selectedVehicle">
     <ng-template let-vehicle pTemplate="item">
-      <div class="flex align-items-center gap-2">
-        <img src="{{vehicle.media.image.thumbnail_url}}" style="width: 36px" alt="car image"/>
+      <div class="flex">
+        <img src="{{vehicle.media.image.thumbnail_url}}" style="width: 70px" alt="car image"/>
         <div>{{ vehicle.naming.make }}</div>
       </div>
     </ng-template>
   </p-listbox>
 </div>
+<p *ngIf="selectedVehicle">{{ selectedVehicle.naming.make }}</p>

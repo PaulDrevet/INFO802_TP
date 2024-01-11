@@ -3,6 +3,7 @@ import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import { ListboxModule } from 'primeng/listbox';
 import {cacheExchange, createClient, fetchExchange} from "@urql/core";
 import gql from "graphql-tag";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-vehicle-list',
@@ -11,7 +12,8 @@ import gql from "graphql-tag";
     NgIf,
     NgForOf,
     NgOptimizedImage,
-    ListboxModule
+    ListboxModule,
+    FormsModule
   ],
   templateUrl: './vehicle-list.component.html',
   styleUrl: './vehicle-list.component.css'
