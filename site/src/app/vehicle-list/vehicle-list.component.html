@@ -1,0 +1,10 @@
+<div>
+  <p-listbox [options]="vehicleList" [listStyle]="{ 'max-height': getMaxHeight(), overflow: 'auto', width: '30rem' }" [style]="{width : '30rem'}">
+    <ng-template let-vehicle pTemplate="item">
+      <div class="flex align-items-center gap-2">
+        <img src="{{vehicle.media.image.thumbnail_url}}" style="width: 36px" alt="car image"/>
+        <div>{{ vehicle.naming.make }}</div>
+      </div>
+    </ng-template>
+  </p-listbox>
+</div>
