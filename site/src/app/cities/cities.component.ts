@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {AutoCompleteModule} from "primeng/autocomplete";
+import {trigger} from "@angular/animations";
 
 interface AutoCompleteCompleteEvent {
   originalEvent: Event;
@@ -13,6 +14,11 @@ interface AutoCompleteCompleteEvent {
   imports: [
     ReactiveFormsModule,
     AutoCompleteModule,
+  ],
+  animations : [
+    trigger('overlayContentAnimation', [
+      // ... your animation configurations ...
+    ]),
   ],
   standalone: true
 })
