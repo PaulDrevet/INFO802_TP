@@ -1,4 +1,4 @@
-<div class="flex m-10 gap-6 h-min">
+<div id="citiesDiv" class="flex pt-2 gap-6">
   <span class="p-float-label">
   <p-autoComplete [(ngModel)]="selectedCityStart" [suggestions]="suggestions" (completeMethod)="getCountries($event)" optionLabel="properties.label"></p-autoComplete>
     <label class="text-black">Ville de départ</label>
