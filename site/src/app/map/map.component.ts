@@ -28,9 +28,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       zoom: initialState.zoom
     });
     this.map.addControl(new NavigationControl({}), 'top-right');
-    new Marker({color: "#FF0000"})
-      .setLngLat([139.7525,35.6846])
-      .addTo(this.map);
 
   }
 

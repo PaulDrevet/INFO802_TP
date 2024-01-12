@@ -1,4 +1,4 @@
-<div class="flex m-10 gap-6">
+<div class="flex m-10 gap-6 h-min">
   <span class="p-float-label">
   <p-autoComplete [(ngModel)]="selectedCityStart" [suggestions]="suggestions" (completeMethod)="getCountries($event)" optionLabel="properties.label"></p-autoComplete>
     <label class="text-black">Ville de départ</label>
@@ -8,12 +8,6 @@
   <p-autoComplete [(ngModel)]="selectedCityEnd" [suggestions]="suggestions" (completeMethod)="getCountries($event)" optionLabel="properties.label"></p-autoComplete>
     <label class="text-black">Ville d'arrivée</label>
   </span>
-
-
-  <p *ngIf="selectedCity?.properties?.label">{{ selectedCity.properties.label }}</p>
-  <p *ngIf="selectedCity?.geometry?.coordinates">{{ selectedCity?.geometry?.coordinates[0]}}</p>
-  <p *ngIf="selectedCity?.geometry?.coordinates">{{ selectedCity?.geometry?.coordinates[1]}}</p>
-
 </div>
 
 

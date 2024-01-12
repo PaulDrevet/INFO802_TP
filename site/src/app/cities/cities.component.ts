@@ -27,8 +27,6 @@ export class CitiesComponent implements OnInit{
   suggestions: any;
   selectedCityStart: any;
   selectedCityEnd: any;
-
-  selectedCity : any;
   api_key : string = "5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049";
 
   ngOnInit() {
