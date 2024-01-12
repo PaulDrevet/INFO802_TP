@@ -33,12 +33,19 @@ export class CitiesComponent{
 
   constructor(private mapService: MapService) {}
 
-  onAddMarkerClick(color : string = "#FF0000") {
+  onAddMarkerStartClick() {
     if (this.selectedCityStart) {
-      console.log(this.selectedCityStart)
       const coordinates = this.selectedCityStart.geometry.coordinates;
       console.log(coordinates)
-      this.mapService.addMarker(coordinates[0], coordinates[1]);
+      this.mapService.addMarkerStart(coordinates[0], coordinates[1]);
+    }
+  }
+
+  onAddMarkerEndClick() {
+    if (this.selectedCityEnd) {
+      const coordinates = this.selectedCityEnd.geometry.coordinates;
+      console.log(coordinates)
+      this.mapService.addMarkerEnd(coordinates[0], coordinates[1]);
     }
   }
 

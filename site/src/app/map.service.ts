@@ -8,12 +8,40 @@ import {Map, Marker} from 'maplibre-gl';
 })
 export class MapService {
   private map!: Map;
+  private previousStartMarker!: Marker;
+  private previousEndMarker!: Marker;
 
   setMap(map: Map) {
     this.map = map;
   }
 
-  addMarker(lng: number, lat: number): Marker {
-    return new Marker({color : "#FF0000"}).setLngLat([lng, lat]).addTo(this.map);
+  addMarkerStart(lng: number, lat: number): Marker {
+    if (this.previousStartMarker) {
+      this.previousStartMarker.remove();
+    }
+
+    const marker = new Marker({draggable: true})
+      .setLngLat([lng, lat])
+      .addTo(this.map);
+
+    this.previousStartMarker = marker;
+
+    return marker;
+
+  }
+
+  addMarkerEnd(lng: number, lat: number): Marker {
+    if (this.previousEndMarker) {
+      this.previousEndMarker.remove();
+    }
+
+    const marker = new Marker({draggable: true})
+      .setLngLat([lng, lat])
+      .addTo(this.map);
+
+    this.previousEndMarker = marker;
+
+    return marker;
+
   }
 }
