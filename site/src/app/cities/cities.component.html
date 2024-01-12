@@ -1,4 +1,6 @@
 <div class="flex m-10 gap-6">
+  <p-autoComplete [(ngModel)]="selectedCity" [suggestions]="suggestions" (completeMethod)="getCountries($event)" optionLabel="properties.label"></p-autoComplete>
+
   <div class="flex items-center">
     <p class="pr-2">Ville de départ : </p>
     <p-autoComplete [(ngModel)]="selectedCityStart" [suggestions]="suggestions" (completeMethod)="filterCountry($event)"></p-autoComplete>
@@ -8,6 +10,11 @@
     <p class="pr-2">Destination : </p>
     <p-autoComplete [(ngModel)]="selectedCityEnd" [suggestions]="suggestions" (completeMethod)="filterCountry($event)"></p-autoComplete>
   </div>
+
+  <p *ngIf="selectedCity?.properties?.label">{{ selectedCity.properties.label }}</p>
+  <p *ngIf="selectedCity?.geometry?.coordinates">{{ selectedCity?.geometry?.coordinates[0]}}</p>
+  <p *ngIf="selectedCity?.geometry?.coordinates">{{ selectedCity?.geometry?.coordinates[1]}}</p>
+
 </div>
 
 
