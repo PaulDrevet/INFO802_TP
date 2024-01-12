@@ -33,6 +33,9 @@ export class CitiesComponent{
 
   constructor(private mapService: MapService) {}
 
+  async drawRoad(){
+  }
+
   onAddMarkerStartClick() {
     if (this.selectedCityStart) {
       const coordinates = this.selectedCityStart.geometry.coordinates;
