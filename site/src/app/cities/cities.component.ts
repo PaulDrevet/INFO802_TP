@@ -1,76 +1,63 @@
-import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {AutoCompleteModule} from "primeng/autocomplete";
-import {trigger} from "@angular/animations";
-import * as xml2js from 'xml2js';
-import * as fs from "fs";
-import {NgIf} from "@angular/common";
+// cities.component.ts
 
-interface AutoCompleteCompleteEvent {
-  originalEvent: Event;
-  query: string;
+import { Component, OnInit } from '@angular/core';
+import {FormControl, FormsModule} from '@angular/forms';
+import {AutoCompleteCompleteEvent, AutoCompleteModule} from 'primeng/autocomplete';
+import { MapService } from '../map.service';
+
+interface AutoCompleteSuggestion {
+  properties: {
+    name: string;
+    centroid: {
+      coordinates: number[];
+    };
+  };
 }
+
 @Component({
   selector: 'app-cities',
   templateUrl: './cities.component.html',
-  styleUrl: './cities.component.css',
+  styleUrls: ['./cities.component.css'],
   imports: [
-    ReactiveFormsModule,
     AutoCompleteModule,
-    FormsModule,
-    NgIf,
+    FormsModule
   ],
   standalone: true
 })
-export class CitiesComponent implements OnInit{
-  cities: any;
-  suggestions: any;
+export class CitiesComponent{
+  api_key: string = '5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049';
+
+  suggestions: AutoCompleteSuggestion[] = [];
   selectedCityStart: any;
   selectedCityEnd: any;
-  api_key : string = "5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049";
 
-  ngOnInit() {
-    this.cities = [
-      "France",
-      "Germany",
-      "Spain",
-      "United Kingdom"
-    ]
-  }
+  constructor(private mapService: MapService) {}
 
-  filterCountry(event: AutoCompleteCompleteEvent) {
-    let filtered: any[] = [];
-    let query = event.query;
-
-    for (let i = 0; i < (this.cities as any[]).length; i++) {
-      let country = (this.cities as any[])[i];
-      if (country.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-        filtered.push(country);
-      }
+  onAddMarkerClick(color : string = "#FF0000") {
+    if (this.selectedCityStart) {
+      console.log(this.selectedCityStart)
+      const coordinates = this.selectedCityStart.geometry.coordinates;
+      console.log(coordinates)
+      this.mapService.addMarker(coordinates[0], coordinates[1]);
     }
-    this.suggestions = filtered;
   }
 
-  getCountries(event : AutoCompleteCompleteEvent){
+  getCountries(event: AutoCompleteCompleteEvent) {
     let query = event.query;
     const apiUrl = `https://api.openrouteservice.org/geocode/autocomplete?api_key=${this.api_key}&text=${query}&boundary.country=FR`;
 
     fetch(apiUrl)
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
       })
-      .then(data => {
-        console.log(data.features[0].properties.name);
+      .then((data) => {
         this.suggestions = data.features;
-        console.log(data)
-        // Traitez les données ici
       })
-      .catch(error => {
-        console.error("Fetch error:", error);
+      .catch((error) => {
+        console.error('Fetch error:', error);
       });
   }
-
 }

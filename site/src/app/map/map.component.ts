@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { Map, NavigationControl, Marker} from 'maplibre-gl';
+import { Map, NavigationControl, Marker } from 'maplibre-gl';
+import { MapService } from '../map.service';
 
 @Component({
   selector: 'app-map',
@@ -13,13 +14,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('map')
   private mapContainer!: ElementRef<HTMLElement>;
 
-  constructor() { }
+  constructor(private mapService: MapService) { }
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit() {
-    const initialState = { lng: 139.753, lat: 35.6844, zoom: 14 };
+    const initialState = { lng: 1, lat: 46, zoom: 5 };
 
     this.map = new Map({
       container: this.mapContainer.nativeElement,
@@ -27,12 +28,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       center: [initialState.lng, initialState.lat],
       zoom: initialState.zoom
     });
-    this.map.addControl(new NavigationControl({}), 'top-right');
 
+    this.mapService.setMap(this.map);
+    this.map.addControl(new NavigationControl({}), 'top-right');
   }
 
   ngOnDestroy() {
     this.map?.remove();
   }
-
 }
