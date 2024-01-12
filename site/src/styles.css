@@ -1,3 +1,5 @@
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
 @layer tailwind-base, primeng, tailwind-utilities;
 
 @layer tailwind-base {
@@ -8,3 +10,5 @@
   @tailwind components;
   @tailwind utilities;
 }
+
+
