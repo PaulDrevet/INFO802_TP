@@ -44,4 +44,8 @@ export class MapService {
     return marker;
 
   }
+
+  drawRoad(){
+
+  }
 }
