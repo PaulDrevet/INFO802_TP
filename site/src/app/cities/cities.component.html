@@ -1,10 +1,10 @@
-<div id="citiesDiv" class="flex mt-8 ml-6 space-x-10">
-  <span class="p-float-label">
+<div id="citiesDiv" class="flex justify-around mt-8">
+  <span class="p-float-label ml-40">
   <p-autoComplete (onSelect)="onAddMarkerStartClick()" [(ngModel)]="selectedCityStart" [suggestions]="suggestions" (completeMethod)="getCountries($event)" optionLabel="properties.label"></p-autoComplete>
     <label class="text-black">Ville de départ</label>
   </span>
 
-  <span class="p-float-label">
+  <span class="p-float-label ml-40">
   <p-autoComplete (onSelect)="onAddMarkerEndClick()" [(ngModel)]="selectedCityEnd" [suggestions]="suggestions" (completeMethod)="getCountries($event)" optionLabel="properties.label"></p-autoComplete>
     <label class="text-black">Ville d'arrivée</label>
   </span>
