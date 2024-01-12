@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {VehicleListComponent} from "./vehicle-list/vehicle-list.component";
 import {CitiesComponent} from "./cities/cities.component";
+import {MapComponent} from "./map/map.component";
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,8 @@ import {CitiesComponent} from "./cities/cities.component";
   standalone: true,
   imports: [
     VehicleListComponent,
-    CitiesComponent
+    CitiesComponent,
+    MapComponent
   ],
   styleUrls: ['./app.component.css']
 })

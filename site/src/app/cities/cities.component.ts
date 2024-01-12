@@ -29,6 +29,7 @@ export class CitiesComponent implements OnInit{
   selectedCityEnd: any;
 
   selectedCity : any;
+  api_key : string = "5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049";
 
   ngOnInit() {
     this.cities = [
@@ -54,7 +55,7 @@ export class CitiesComponent implements OnInit{
 
   getCountries(event : AutoCompleteCompleteEvent){
     let query = event.query;
-    const apiUrl = "https://api.openrouteservice.org/geocode/autocomplete?api_key=5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049&text=" + query + "&boundary.country=FR"
+    const apiUrl = `https://api.openrouteservice.org/geocode/autocomplete?api_key=${this.api_key}&text=${query}&boundary.country=FR`;
 
     fetch(apiUrl)
       .then(response => {
