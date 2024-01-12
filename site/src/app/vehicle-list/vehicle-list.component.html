@@ -1,19 +1,14 @@
-<div class="m-2">
-  <h2 class="text-2xl">Choissisez votre véhicule</h2>
-  <div class="mt-4">
+  <div class="rounded-2xl mt-8 ml-2">
     <p-listbox [options]="vehicleList" [listStyle]="{ 'max-height': getMaxHeight(), overflow: 'auto', width: '30rem' }"
                [style]="{width : '30rem'}" [(ngModel)]="selectedVehicle">
       <ng-template let-vehicle pTemplate="item">
         <div class="flex">
           <img src="{{vehicle.media.image.thumbnail_url}}" class="w-32 bg-gray-200 rounded-xl" alt="car image"/>
           <div class="p-2">
-            <p class="font-bold">{{ vehicle.naming.make }} {{vehicle.naming.model}}</p>
-            <p>{{vehicle.naming.chargetrip_version}}</p>
+            <p class="font-bold">{{ vehicle.naming.make }} {{ vehicle.naming.model }}</p>
+            <p>{{ vehicle.naming.chargetrip_version }}</p>
           </div>
         </div>
       </ng-template>
     </p-listbox>
   </div>
-</div>
-
-<p *ngIf="selectedVehicle">{{ selectedVehicle.naming.make }}</p>

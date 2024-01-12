@@ -91,7 +91,7 @@ export class VehicleListComponent implements OnInit {
 
   getMaxHeight(): string {
     const screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    const maxHeightPercentage = 90;
+    const maxHeightPercentage = 92;
     return (screenHeight * maxHeightPercentage / 100) + 'px';
   }
 }
