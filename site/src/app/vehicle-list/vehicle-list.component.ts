@@ -78,9 +78,6 @@ export class VehicleListComponent implements OnInit {
         if (error) {
           console.log(error);
         } else {
-          console.log(data);
-          console.log(data.vehicleList);
-          console.log(data.vehicleList.length);
           this.vehicleList = data.vehicleList;
         }
       })

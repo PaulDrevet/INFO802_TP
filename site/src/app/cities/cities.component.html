@@ -1,3 +1,5 @@
+<button (click)="drawRoad()">yes</button>
+
 <div id="citiesDiv" class="flex justify-around mt-8">
   <span class="p-float-label ml-40">
   <p-autoComplete (onSelect)="onAddMarkerStartClick()" [(ngModel)]="selectedCityStart" [suggestions]="suggestions" (completeMethod)="getCountries($event)" optionLabel="properties.label"></p-autoComplete>
