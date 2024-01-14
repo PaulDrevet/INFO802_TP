@@ -1,14 +1,29 @@
-  <div class="rounded-2xl mt-8 ml-2">
-    <p-listbox [options]="vehicleList" [listStyle]="{ 'max-height': getMaxHeight(), overflow: 'auto'}"
-               [style]="{width : '30rem'}" [(ngModel)]="selectedVehicle" (click)="getVehicleDetail()">
-      <ng-template let-vehicle pTemplate="item">
-        <div class="flex">
-          <img src="{{vehicle.media.image.thumbnail_url}}" class="w-32 bg-gray-200 rounded-xl" alt="car image"/>
-          <div class="p-2">
-            <p class="font-bold">{{ vehicle.naming.make }} {{ vehicle.naming.model }}</p>
-            <p>{{ vehicle.naming.chargetrip_version }}</p>
+<div class="rounded-2xl mt-8 ml-2">
+  <p-listbox [options]="vehicleList" [listStyle]="{ 'max-height': getMaxHeight(), overflow: 'auto'}"
+             [style]="{width : '30rem'}" [(ngModel)]="selectedVehicle" (click)="getVehicleDetail(selectedVehicle.id)">
+    <ng-template let-vehicle pTemplate="item">
+      <div class="flex">
+        <img src="{{vehicle.media.image.thumbnail_url}}" class="w-32 bg-gray-200 rounded-xl" alt="car image"/>
+        <div class="p-2">
+          <p class="font-bold">{{ vehicle.naming.make }} {{ vehicle.naming.model }}</p>
+          <p>{{ vehicle.naming.chargetrip_version }}</p>
+          <div class="absolute top-2 right-2">
+            <img src="assets/information.png" alt="arrow right" width="20px" (click)="showDetail($event, vehicle.id)"/>
           </div>
         </div>
-      </ng-template>
-    </p-listbox>
+      </div>
+    </ng-template>
+  </p-listbox>
+</div>
+
+
+<p-dialog *ngIf="detailVehicle" header="{{detailVehicle.naming.make}} {{ detailVehicle.naming.model }}" [(visible)]="visible"
+          [style]="{width: '50vw'}">
+  <div class="flex">
+    <img src="{{detailVehicle.media.image.thumbnail_url}}" class="w-1/2 bg-gray-200 rounded-xl" alt="car image"/>
+    <div>
+      <p>Available : {{detailVehicle.availability.status}}</p>
+      <p>Range : {{detailVehicle.performance.acceleration}}</p>
+    </div>
   </div>
+</p-dialog>

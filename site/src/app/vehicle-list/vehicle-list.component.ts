@@ -4,6 +4,8 @@ import {ListboxModule} from 'primeng/listbox';
 import {cacheExchange, createClient, fetchExchange} from "@urql/core";
 import gql from "graphql-tag";
 import {FormsModule} from "@angular/forms";
+import { DialogModule } from 'primeng/dialog';
+
 
 @Component({
   selector: 'app-vehicle-list',
@@ -13,7 +15,8 @@ import {FormsModule} from "@angular/forms";
     NgForOf,
     NgOptimizedImage,
     ListboxModule,
-    FormsModule
+    FormsModule,
+    DialogModule
   ],
   templateUrl: './vehicle-list.component.html',
   styleUrl: './vehicle-list.component.css'
@@ -24,12 +27,21 @@ export class VehicleListComponent implements OnInit {
   data: any;
   vehicleList: any;
   selectedVehicle: any;
+  detailVehicle: any;
+
+  visible: boolean = false;
+
+  showDetail(event : Event,vehicleId: any) {
+    event.stopPropagation();
+    this.getVehicleDetail(vehicleId);
+    this.visible = true;
+  }
 
   ngOnInit() {
     this.getVehicleList();
   }
 
-  getVehicleDetail(): void {
+  getVehicleDetail(vehiculeId : any): void {
     const headers = {
       'x-client-id': '659fbb1c03f11572e9c6a30a',
       'x-app-id': '659fbb1c03f11572e9c6a30c',
@@ -43,7 +55,7 @@ export class VehicleListComponent implements OnInit {
       },
       exchanges: [fetchExchange, cacheExchange],
     });
-    this.retrieveVehicleDetail(this.selectedVehicle.id)
+    this.retrieveVehicleDetail(vehiculeId)
   }
 
   retrieveVehicleDetail(vehicleId: string): void {
@@ -171,7 +183,8 @@ export class VehicleListComponent implements OnInit {
         if (error) {
           console.log(error);
         } else {
-          console.log(data)
+          this.detailVehicle = data.vehicle;
+          console.log(this.detailVehicle)
         }
       })
       .catch((error: any) => {
