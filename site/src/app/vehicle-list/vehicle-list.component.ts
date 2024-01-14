@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
-import { ListboxModule } from 'primeng/listbox';
+import {ListboxModule} from 'primeng/listbox';
 import {cacheExchange, createClient, fetchExchange} from "@urql/core";
 import gql from "graphql-tag";
 import {FormsModule} from "@angular/forms";
@@ -19,7 +19,6 @@ import {FormsModule} from "@angular/forms";
   styleUrl: './vehicle-list.component.css'
 })
 export class VehicleListComponent implements OnInit {
-  title = 'project';
 
   private client: any;
   data: any;
@@ -27,10 +26,160 @@ export class VehicleListComponent implements OnInit {
   selectedVehicle: any;
 
   ngOnInit() {
-    this.getVehicle();
+    this.getVehicleList();
   }
 
-  getVehicle() : void {
+  getVehicleDetail(): void {
+    const headers = {
+      'x-client-id': '659fbb1c03f11572e9c6a30a',
+      'x-app-id': '659fbb1c03f11572e9c6a30c',
+    };
+
+    this.client = createClient({
+      url: 'https://api.chargetrip.io/graphql',
+      fetchOptions: {
+        method: 'POST',
+        headers,
+      },
+      exchanges: [fetchExchange, cacheExchange],
+    });
+    this.retrieveVehicleDetail(this.selectedVehicle.id)
+  }
+
+  retrieveVehicleDetail(vehicleId: string): void {
+
+    this.client
+      .query(gql`
+        query vehicle {
+  vehicle(id: "${vehicleId}") {
+    id
+    naming {
+      make
+      model
+      version
+      edition
+      chargetrip_version
+    }
+    drivetrain {
+      type
+    }
+    connectors {
+      standard
+      power
+      max_electric_power
+      time
+      speed
+    }
+    adapters {
+      standard
+      power
+      max_electric_power
+      time
+      speed
+    }
+    battery {
+      usable_kwh
+      full_kwh
+    }
+    body {
+      width
+      height
+      weight {
+        minimum
+        nominal
+        maximal
+      }
+      seats
+    }
+    availability {
+      status
+    }
+    performance {
+      acceleration
+      top_speed
+    }
+    range {
+      provider
+      provider_is_estimated
+      worst{
+        highway
+        city
+        combined
+      }
+      best {
+        highway
+        city
+        combined
+      }
+      chargetrip_range {
+        best
+        worst
+      }
+    }
+    media {
+      image {
+        id
+        type
+        url
+        height
+        width
+        thumbnail_url
+        thumbnail_height
+        thumbnail_width
+      }
+      brand {
+        id
+        type
+        url
+        height
+        width
+        thumbnail_url
+        thumbnail_height
+        thumbnail_width
+      }
+      image_list {
+        id
+        type
+        url
+        height
+        width
+        thumbnail_url
+        thumbnail_height
+        thumbnail_width
+      }
+      video {
+        id
+        url
+      }
+      video_list {
+        id
+        url
+      }
+    }
+    routing {
+      fast_charging_support
+    }
+    connect {
+      providers
+    }
+  }
+}
+      ` )
+      .toPromise()
+      .then((response: any) => {
+        const {data, error} = response;
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(data)
+        }
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  }
+
+  getVehicleList(): void {
     const headers = {
       'x-client-id': '659fbb1c03f11572e9c6a30a',
       'x-app-id': '659fbb1c03f11572e9c6a30c',
@@ -45,10 +194,10 @@ export class VehicleListComponent implements OnInit {
       exchanges: [fetchExchange, cacheExchange],
     });
 
-    this.getVehicleList({ page: 0, size: 100 });
+    this.retrieveVehicleList({page: 0, size: 100});
   }
 
-  getVehicleList({ page, size = 10, search = '' }: { page: number; size?: number; search?: string }): void {
+  retrieveVehicleList({page, size = 10, search = ''}: { page: number; size?: number; search?: string }): void {
 
     this.client
       .query(gql`
@@ -71,14 +220,15 @@ export class VehicleListComponent implements OnInit {
             }
           }
         }
-      `, { page, size, search })
+      `, {page, size, search})
       .toPromise()
-      .then((response :any) => {
-        const { data, error } = response;
+      .then((response: any) => {
+        const {data, error} = response;
         if (error) {
           console.log(error);
         } else {
           this.vehicleList = data.vehicleList;
+          console.log(this.vehicleList)
         }
       })
       .catch((error: any) => {
