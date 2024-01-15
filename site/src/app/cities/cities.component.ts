@@ -34,7 +34,6 @@ export class CitiesComponent{
   constructor(private mapService: MapService) {}
 
   async drawRoad(){
-    await this.mapService.drawRoadTest()
   }
 
   onAddMarkerStartClick() {
