@@ -21,8 +21,10 @@
           [style]="{width: '50vw'}">
   <div class="flex">
     <img src="{{detailVehicle.media.image.thumbnail_url}}" class="w-1/2 bg-gray-200 rounded-xl" alt="car image"/>
-    <div>
-      <p>Available : {{detailVehicle.availability.status}}</p>
+    <div class="pl-2">
+      <p *ngIf="detailVehicle.availability.status == 'available'">Available : Yes</p>
+      <p *ngIf="detailVehicle.availability.status == 'no_longer_available'">Available : No</p>
+      <p *ngIf="detailVehicle.availability.status == 'release_date_announced_preorderable'">Available : Not yet released</p>
       <p>Range : {{detailVehicle.performance.acceleration}}</p>
     </div>
   </div>

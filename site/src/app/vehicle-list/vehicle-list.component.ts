@@ -59,6 +59,7 @@ export class VehicleListComponent implements OnInit {
   }
 
   retrieveVehicleDetail(vehicleId: string): void {
+    this.detailVehicle = null;
 
     this.client
       .query(gql`
