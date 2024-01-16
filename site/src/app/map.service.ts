@@ -71,8 +71,7 @@ export class MapService {
       .then(response => response.json())
       .then(data => {
         const coordinates = data.features[0].geometry.coordinates;
-        this.drawRoad(coordinates)
-        this.getChargingStationsAtIntervals(coordinates, 90).then(steps =>
+        this.getChargingStationsAtIntervals(coordinates, 50).then(steps =>
           this.getRoadCoordinates(steps).then(coordinates =>
             this.drawRoad(coordinates, '#73af13', 3))
         );
@@ -167,6 +166,8 @@ export class MapService {
 
   drawMarkers(coordinates: number[][]) {
     this.markers.forEach(marker => marker.remove());
+
+    coordinates = coordinates.slice(1, -1)
 
     coordinates.forEach((coordinate) => {
       const m = new Marker({
