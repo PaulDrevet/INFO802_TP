@@ -34,7 +34,6 @@ export class CitiesComponent{
   constructor(private mapService: MapService) {}
 
   drawRoad(){
-    this.mapService.displayRoad3Points().then(r => this.mapService.drawRoad(r));
   }
 
   onAddMarkerStartClick() {

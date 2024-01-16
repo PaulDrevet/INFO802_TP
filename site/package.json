@@ -21,6 +21,7 @@
     "@types/geojson": "^7946.0.13",
     "@types/maplibre-gl": "^1.14.0",
     "@urql/core": "^4.2.2",
+    "axios": "^1.6.5",
     "graphql-tag": "^2.12.6",
     "maplibre-gl": "^3.6.2",
     "polyline": "^0.2.0",
