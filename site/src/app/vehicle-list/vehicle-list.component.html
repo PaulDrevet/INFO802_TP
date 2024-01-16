@@ -1,6 +1,6 @@
 <div class="rounded-2xl mt-8 ml-2">
   <p-listbox [options]="vehicleList" [listStyle]="{ 'max-height': getMaxHeight(), overflow: 'auto'}"
-             [style]="{width : '30rem'}" [(ngModel)]="selectedVehicle" (click)="getVehicleDetail(selectedVehicle.id)">
+             [style]="{width : '30rem'}" [(ngModel)]="selectedVehicle" (click)="shareVehicle(selectedVehicle.id)">
     <ng-template let-vehicle pTemplate="item">
       <div class="flex">
         <img src="{{vehicle.media.image.thumbnail_url}}" class="w-32 bg-gray-200 rounded-xl" alt="car image"/>
@@ -21,11 +21,16 @@
           [style]="{width: '50vw'}">
   <div class="flex">
     <img src="{{detailVehicle.media.image.thumbnail_url}}" class="w-1/2 bg-gray-200 rounded-xl" alt="car image"/>
-    <div class="pl-2">
+    <div *ngIf="detailVehicle.availability.status != 'release_date_announced_preorderable';else nott" class="pl-4 space-y-2">
       <p *ngIf="detailVehicle.availability.status == 'available'">Available : Yes</p>
       <p *ngIf="detailVehicle.availability.status == 'no_longer_available'">Available : No</p>
-      <p *ngIf="detailVehicle.availability.status == 'release_date_announced_preorderable'">Available : Not yet released</p>
-      <p>Range : {{detailVehicle.performance.acceleration}}</p>
+      <p>Vitesse maximale : {{detailVehicle.performance.top_speed}}mph</p>
+      <p>Batterie : {{detailVehicle.range.best.combined}}km</p>
     </div>
+    <ng-template #nott>
+      <div class="flex justify-center items-center w-full">
+        <p>Not yet released</p>
+      </div>
+    </ng-template>
   </div>
 </p-dialog>

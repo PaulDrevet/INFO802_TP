@@ -4,12 +4,22 @@ import {Injectable} from '@angular/core';
 import {Map, Marker} from 'maplibre-gl';
 import * as polyline from 'polyline';
 import axios from "axios";
+import {VehicleService} from "./vehicle.service";
 
 
 @Injectable({
   providedIn: 'root',
 })
 export class MapService {
+
+  constructor(private service : VehicleService){
+  }
+
+  getVehicle(){
+    return this.service.getSelectedVehicle();
+  }
+
+
   private map!: Map;
   private previousStartMarker!: Marker;
   private previousEndMarker!: Marker;
@@ -65,13 +75,17 @@ export class MapService {
       endPoint
     ]
 
+    const selectedVehicle = this.getVehicle();
+    console.log(selectedVehicle)
+    const autonomy = selectedVehicle.range.best.combined;
+
     const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049&start=${coordinates[0]}&end=${coordinates[1]}`;
 
     fetch(url)
       .then(response => response.json())
       .then(data => {
         const coordinates = data.features[0].geometry.coordinates;
-        this.getChargingStationsAtIntervals(coordinates, 50).then(steps =>
+        this.getChargingStationsAtIntervals(coordinates, autonomy).then(steps =>
           this.getRoadCoordinates(steps).then(coordinates =>
             this.drawRoad(coordinates, '#73af13', 3))
         );

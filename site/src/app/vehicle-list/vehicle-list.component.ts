@@ -5,6 +5,7 @@ import {cacheExchange, createClient, fetchExchange} from "@urql/core";
 import gql from "graphql-tag";
 import {FormsModule} from "@angular/forms";
 import { DialogModule } from 'primeng/dialog';
+import {VehicleService} from "../vehicle.service";
 
 
 @Component({
@@ -31,17 +32,25 @@ export class VehicleListComponent implements OnInit {
 
   visible: boolean = false;
 
-  showDetail(event : Event,vehicleId: any) {
+  constructor(private vehicleService: VehicleService) {}
+
+
+  async showDetail(event : Event,vehicleId: any) {
     event.stopPropagation();
-    this.getVehicleDetail(vehicleId);
+    this.detailVehicle = await this.getVehicleDetail(vehicleId);
     this.visible = true;
+  }
+
+  async shareVehicle(vehicleId : string) : Promise<void>{
+    const v = this.getVehicleDetail(vehicleId)
+    this.vehicleService.setSelectedVehicle(v);
   }
 
   ngOnInit() {
     this.getVehicleList();
   }
 
-  getVehicleDetail(vehiculeId : any): void {
+  async getVehicleDetail(vehiculeId: any): Promise<any> {
     const headers = {
       'x-client-id': '659fbb1c03f11572e9c6a30a',
       'x-app-id': '659fbb1c03f11572e9c6a30c',
@@ -55,13 +64,19 @@ export class VehicleListComponent implements OnInit {
       },
       exchanges: [fetchExchange, cacheExchange],
     });
-    this.retrieveVehicleDetail(vehiculeId)
+
+    try {
+      const v = await this.retrieveVehicleDetail(vehiculeId);
+      return v;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
-  retrieveVehicleDetail(vehicleId: string): void {
-    this.detailVehicle = null;
 
-    this.client
+  async retrieveVehicleDetail(vehicleId: string): Promise<any> {
+    return this.client
       .query(gql`
         query vehicle {
   vehicle(id: "${vehicleId}") {
@@ -180,18 +195,16 @@ export class VehicleListComponent implements OnInit {
       ` )
       .toPromise()
       .then((response: any) => {
-        const {data, error} = response;
+        const { data, error } = response;
         if (error) {
           console.log(error);
+          throw error; // Propager l'erreur pour être capturée dans le bloc catch
         } else {
-          this.detailVehicle = data.vehicle;
-          console.log(this.detailVehicle)
+          return data.vehicle;
         }
-      })
-      .catch((error: any) => {
-        console.log(error);
       });
   }
+
 
   getVehicleList(): void {
     const headers = {
