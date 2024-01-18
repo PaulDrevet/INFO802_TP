@@ -13,7 +13,7 @@ import {CitiesComponent} from "./cities/cities.component";
 })
 export class MapService {
 
-  constructor(private vehicleService : VehicleService, private citiesComponent : CitiesComponent){
+  constructor(private vehicleService : VehicleService){
   }
 
   getVehicle(){
@@ -40,10 +40,6 @@ export class MapService {
       .addTo(this.map);
 
     this.previousStartMarker = marker;
-
-    if (this.previousEndMarker) {
-      this.getRoad();
-    }
     return marker;
 
   }
@@ -58,50 +54,35 @@ export class MapService {
       .addTo(this.map);
 
     this.previousEndMarker = marker;
-
-    if (this.previousStartMarker) {
-      this.getRoad();
-    }
-
     return marker;
 
   }
 
-  getRoad(): void {
+  async getRoad(): Promise<[number, number]> {
     const startingPoint = this.previousStartMarker.getLngLat().toArray(); // Paris
     const endPoint = this.previousEndMarker.getLngLat().toArray(); // Lyon
 
-    const coordinates = [
+    let coordinates = [
       startingPoint,
       endPoint
-    ]
+    ];
 
     const selectedVehicle = this.getVehicle();
-    console.log(selectedVehicle)
-    //const autonomy = selectedVehicle.range.best.combined;
-    const autonomy = 100;
 
+    const autonomy = 100;
 
     const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049&start=${coordinates[0]}&end=${coordinates[1]}`;
 
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const coordinates = data.features[0].geometry.coordinates;
-        this.getChargingStationsAtIntervals(coordinates, autonomy).then(steps =>
-          this.getRoadCoordinates(steps).then(data =>
-            this.updateMap(data))
-        );
-      })
-  }
-
-  updateMap(data : any) : void {
-    const coordinates = data[0];
-    const distance = data[1];
-    const duration = data[2];
-
-    this.drawRoad(coordinates, '#ff0000', 3);
-
+    let response = await fetch(url);
+    let data: any = await response.json();
+    let road = data.features[0].geometry.coordinates;
+    let steps = await this.getChargingStationsAtIntervals(road, autonomy);
+    let data1: any = await this.getRoadCoordinates(steps);
+    road = data1[0];
+    const distance : number = data1[1] / 1000;
+    const duration : number = data1[2] / 60;
+    this.drawRoad(road, '#ff0000', 3);
+    return [distance, duration];
   }
 
   async getChargingStationsAtIntervals(routeCoordinates: [number, number][], intervalKilometers: number): Promise<any> {
@@ -157,7 +138,7 @@ export class MapService {
   }
 
 
-  getRoadCoordinates(coordinates: [number, number][]): Promise<number[][]> {
+  getRoadCoordinates(coordinates: [number, number][]): Promise<any> {
 
     this.drawMarkers(coordinates)
 

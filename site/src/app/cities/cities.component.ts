@@ -1,9 +1,9 @@
 // cities.component.ts
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormsModule} from '@angular/forms';
 import {AutoCompleteCompleteEvent, AutoCompleteModule} from 'primeng/autocomplete';
-import { MapService } from '../map.service';
+import {MapService} from '../map.service';
 import {ButtonModule} from "primeng/button";
 
 interface AutoCompleteSuggestion {
@@ -26,24 +26,30 @@ interface AutoCompleteSuggestion {
   ],
   standalone: true
 })
-export class CitiesComponent{
+export class CitiesComponent {
   api_key: string = '5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049';
 
   suggestions: AutoCompleteSuggestion[] = [];
   selectedCityStart: any;
   selectedCityEnd: any;
   loading: boolean = false;
+  distance : string | undefined;
+  duration : string | undefined;
 
-
-  constructor(private mapService: MapService) {}
+  constructor(private mapService: MapService) {
+  }
 
 
   calculate() {
     this.loading = true;
+    this.mapService.getRoad().then(data => this.update(data))
+  }
 
-    setTimeout(() => {
-      this.loading = false
-    }, 2000);
+  update(data: [number, number]): void {
+    const distance = data[0]
+    const duration = data[1]
+    console.log(distance, duration)
+    this.loading = false
   }
 
   onAddMarkerStartClick() {
