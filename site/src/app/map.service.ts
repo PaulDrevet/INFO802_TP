@@ -5,6 +5,7 @@ import {Map, Marker} from 'maplibre-gl';
 import * as polyline from 'polyline';
 import axios from "axios";
 import {VehicleService} from "./vehicle.service";
+import {CitiesComponent} from "./cities/cities.component";
 
 
 @Injectable({
@@ -12,11 +13,11 @@ import {VehicleService} from "./vehicle.service";
 })
 export class MapService {
 
-  constructor(private service : VehicleService){
+  constructor(private vehicleService : VehicleService, private citiesComponent : CitiesComponent){
   }
 
   getVehicle(){
-    return this.service.getSelectedVehicle();
+    return this.vehicleService.getSelectedVehicle();
   }
 
 
@@ -88,10 +89,19 @@ export class MapService {
       .then(data => {
         const coordinates = data.features[0].geometry.coordinates;
         this.getChargingStationsAtIntervals(coordinates, autonomy).then(steps =>
-          this.getRoadCoordinates(steps).then(coordinates =>
-            this.drawRoad(coordinates, '#73af13', 3))
+          this.getRoadCoordinates(steps).then(data =>
+            this.updateMap(data))
         );
       })
+  }
+
+  updateMap(data : any) : void {
+    const coordinates = data[0];
+    const distance = data[1];
+    const duration = data[2];
+
+    this.drawRoad(coordinates, '#ff0000', 3);
+
   }
 
   async getChargingStationsAtIntervals(routeCoordinates: [number, number][], intervalKilometers: number): Promise<any> {
@@ -164,11 +174,15 @@ export class MapService {
         if (this.readyState === 4) {
           if (this.status === 200) {
             const data = JSON.parse(this.responseText);
+            console.log(data)
             const encodedGeometry: string = data.routes[0].geometry;
+            const distance= data.routes[0].summary.distance;
+            const duration: string = data.routes[0].summary.duration;
+
             const decodedCoordinates: number[][] = polyline.decode(encodedGeometry);
 
             const fixedCoordinates = decodedCoordinates.map(coord => [coord[1], coord[0]]);
-            resolve(fixedCoordinates);
+            resolve([fixedCoordinates, distance, duration]);
           } else {
             reject(new Error('Échec de la requête'));
           }

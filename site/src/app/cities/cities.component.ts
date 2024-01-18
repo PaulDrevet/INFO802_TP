@@ -38,15 +38,12 @@ export class CitiesComponent{
   constructor(private mapService: MapService) {}
 
 
-  load() {
+  calculate() {
     this.loading = true;
 
     setTimeout(() => {
       this.loading = false
     }, 2000);
-  }
-
-  drawRoad(){
   }
 
   onAddMarkerStartClick() {
