@@ -77,7 +77,9 @@ export class MapService {
 
     const selectedVehicle = this.getVehicle();
     console.log(selectedVehicle)
-    const autonomy = selectedVehicle.range.best.combined;
+    //const autonomy = selectedVehicle.range.best.combined;
+    const autonomy = 100;
+
 
     const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049&start=${coordinates[0]}&end=${coordinates[1]}`;
 

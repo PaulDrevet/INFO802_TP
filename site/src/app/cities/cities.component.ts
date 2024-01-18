@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormsModule} from '@angular/forms';
 import {AutoCompleteCompleteEvent, AutoCompleteModule} from 'primeng/autocomplete';
 import { MapService } from '../map.service';
+import {ButtonModule} from "primeng/button";
 
 interface AutoCompleteSuggestion {
   properties: {
@@ -20,7 +21,8 @@ interface AutoCompleteSuggestion {
   styleUrls: ['./cities.component.css'],
   imports: [
     AutoCompleteModule,
-    FormsModule
+    FormsModule,
+    ButtonModule
   ],
   standalone: true
 })
@@ -30,8 +32,19 @@ export class CitiesComponent{
   suggestions: AutoCompleteSuggestion[] = [];
   selectedCityStart: any;
   selectedCityEnd: any;
+  loading: boolean = false;
+
 
   constructor(private mapService: MapService) {}
+
+
+  load() {
+    this.loading = true;
+
+    setTimeout(() => {
+      this.loading = false
+    }, 2000);
+  }
 
   drawRoad(){
   }

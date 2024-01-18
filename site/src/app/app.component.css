@@ -4,6 +4,7 @@
 
 app-vehicle-list, app-cities {
   z-index: 1;
+  margin : 10px;
 }
 
 app-cities {

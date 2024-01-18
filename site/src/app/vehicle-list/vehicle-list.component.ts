@@ -6,7 +6,7 @@ import gql from "graphql-tag";
 import {FormsModule} from "@angular/forms";
 import { DialogModule } from 'primeng/dialog';
 import {VehicleService} from "../vehicle.service";
-
+import { list } from './vehicles-json';
 
 @Component({
   selector: 'app-vehicle-list',
@@ -47,7 +47,7 @@ export class VehicleListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getVehicleList();
+    this.vehicleList = list;
   }
 
   async getVehicleDetail(vehiculeId: any): Promise<any> {
@@ -265,7 +265,7 @@ export class VehicleListComponent implements OnInit {
 
   getMaxHeight(): string {
     const screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    const maxHeightPercentage = 92;
+    const maxHeightPercentage = 95;
     return (screenHeight * maxHeightPercentage / 100) + 'px';
   }
 }
