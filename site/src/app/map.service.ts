@@ -5,7 +5,6 @@ import {Map, Marker} from 'maplibre-gl';
 import * as polyline from 'polyline';
 import axios from "axios";
 import {VehicleService} from "./vehicle.service";
-import {CitiesComponent} from "./cities/cities.component";
 
 
 @Injectable({
@@ -58,7 +57,7 @@ export class MapService {
 
   }
 
-  async getRoad(): Promise<[number, number]> {
+  async getRoad(): Promise<[number, number, number]> {
     const startingPoint = this.previousStartMarker.getLngLat().toArray(); // Paris
     const endPoint = this.previousEndMarker.getLngLat().toArray(); // Lyon
 
@@ -79,10 +78,11 @@ export class MapService {
     let steps = await this.getChargingStationsAtIntervals(road, autonomy);
     let data1: any = await this.getRoadCoordinates(steps);
     road = data1[0];
-    const distance : number = data1[1] / 1000;
-    const duration : number = data1[2] / 60;
+    const distance : number = data1[1];
+    const duration : number = data1[2];
+    const breaks : number = road.length;
     this.drawRoad(road, '#ff0000', 3);
-    return [distance, duration];
+    return [distance, duration, breaks];
   }
 
   async getChargingStationsAtIntervals(routeCoordinates: [number, number][], intervalKilometers: number): Promise<any> {

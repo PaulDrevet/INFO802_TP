@@ -4,9 +4,9 @@ import {ListboxModule} from 'primeng/listbox';
 import {cacheExchange, createClient, fetchExchange} from "@urql/core";
 import gql from "graphql-tag";
 import {FormsModule} from "@angular/forms";
-import { DialogModule } from 'primeng/dialog';
+import {DialogModule} from 'primeng/dialog';
 import {VehicleService} from "../vehicle.service";
-import { list } from './vehicles-json';
+import {list} from './vehicles-json';
 
 @Component({
   selector: 'app-vehicle-list',
@@ -66,8 +66,7 @@ export class VehicleListComponent implements OnInit {
     });
 
     try {
-      const v = await this.retrieveVehicleDetail(vehiculeId);
-      return v;
+      return await this.retrieveVehicleDetail(vehiculeId);
     } catch (error) {
       console.log(error);
       throw error;

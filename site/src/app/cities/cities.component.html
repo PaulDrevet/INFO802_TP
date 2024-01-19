@@ -13,8 +13,11 @@
   </span>
   </div>
   <div class="flex pt-2">
+    <p-toast [life]="2000"></p-toast>
     <p-button label="Calculer l'itinéraire" [loading]="loading" (onClick)="calculate()"></p-button>
-    <p></p>
+    <p *ngIf="duration !== undefined">durée = {{duration}}</p>
+    <p *ngIf="distance !== undefined">distance = {{distance}}</p>
+    <p *ngIf="breaks !== undefined">pause = {{breaks}}</p>
   </div>
 
 </div>
