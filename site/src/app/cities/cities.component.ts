@@ -8,6 +8,7 @@ import {ButtonModule} from "primeng/button";
 import {NgIf} from "@angular/common";
 import { ToastModule } from 'primeng/toast';
 import {MessageService} from "primeng/api";
+import axios from "axios";
 
 interface AutoCompleteSuggestion {
   properties: {
@@ -45,7 +46,6 @@ export class CitiesComponent {
 
   constructor(private mapService: MapService, private messageService: MessageService) {
   }
-
 
   calculate() {
     console.log(this.selectedCityStart)

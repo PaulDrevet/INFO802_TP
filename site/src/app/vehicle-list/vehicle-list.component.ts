@@ -47,13 +47,14 @@ export class VehicleListComponent implements OnInit {
   }
 
   ngOnInit() {
+    //this.getVehicleList();
     this.vehicleList = list;
   }
 
   async getVehicleDetail(vehiculeId: any): Promise<any> {
     const headers = {
-      'x-client-id': '659fbb1c03f11572e9c6a30a',
-      'x-app-id': '659fbb1c03f11572e9c6a30c',
+      'x-client-id': "65b21034082e3c09d1c2eeff",
+      'x-app-id': "65b21034082e3c09d1c2ef01"
     };
 
     this.client = createClient({
@@ -207,8 +208,8 @@ export class VehicleListComponent implements OnInit {
 
   getVehicleList(): void {
     const headers = {
-      'x-client-id': '659fbb1c03f11572e9c6a30a',
-      'x-app-id': '659fbb1c03f11572e9c6a30c',
+      'x-client-id': "65b21034082e3c09d1c2eeff",
+      'x-app-id': "65b21034082e3c09d1c2ef01"
     };
 
     this.client = createClient({
@@ -264,7 +265,7 @@ export class VehicleListComponent implements OnInit {
 
   getMaxHeight(): string {
     const screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    const maxHeightPercentage = 95;
+    const maxHeightPercentage = 96;
     return (screenHeight * maxHeightPercentage / 100) + 'px';
   }
 }

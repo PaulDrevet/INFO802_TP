@@ -5,6 +5,7 @@ import {Map, Marker} from 'maplibre-gl';
 import * as polyline from 'polyline';
 import axios from "axios";
 import {VehicleService} from "./vehicle.service";
+import { parseString } from 'xml2js';
 
 
 @Injectable({
@@ -69,6 +70,7 @@ export class MapService {
     const selectedVehicle = this.getVehicle();
 
     const autonomy = 100;
+    const chargingSpeed = 70;
 
     const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049&start=${coordinates[0]}&end=${coordinates[1]}`;
 
@@ -76,13 +78,53 @@ export class MapService {
     let data: any = await response.json();
     let road = data.features[0].geometry.coordinates;
     let steps = await this.getChargingStationsAtIntervals(road, autonomy);
-    let data1: any = await this.getRoadCoordinates(steps);
+    let data1: any = await this.getRoadCoordinates(steps, chargingSpeed);
     road = data1[0];
-    const distance : number = data1[1];
-    const duration : number = data1[2];
-    const breaks : number = road.length;
+    const distance : number = Math.floor(data1[1]);
+    const duration : number = Math.floor(data1[2]);
+    const breaks : number = steps.length-2;
     this.drawRoad(road, '#ff0000', 3);
-    return [distance, duration, breaks];
+    console.log(distance, duration, autonomy, chargingSpeed)
+    let time = await this.callSoap(distance, duration, autonomy, chargingSpeed)
+    return [distance, time, breaks];
+  }
+
+
+  public async callSoap(distance : number, duration : number, autonomy : number, chargingSpeed : number): Promise<any> {
+    const soapEnvelope = `
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                      xmlns:exa="spyne.getTime">
+      <soapenv:Header/>
+      <soapenv:Body>
+        <exa:road>
+        <exa:distance>${distance}</exa:distance>
+        <exa:duration>${duration}</exa:duration>
+        <exa:autonomy>${autonomy}</exa:autonomy>
+        <exa:charging_speed>${chargingSpeed}</exa:charging_speed>
+        </exa:road>
+      </soapenv:Body>
+    </soapenv:Envelope>
+  `;
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8001', soapEnvelope, {
+        headers: {'Content-Type': 'text/xml'}
+      });
+      const result = await response.data
+
+      parseString(result, { explicitArray: false, ignoreAttrs: true }, (err, result) => {
+        if (err) {
+          console.error('Erreur lors de l\'analyse XML :', err);
+          return;
+        }
+        const roadResult = result['soap11env:Envelope']['soap11env:Body']['tns:roadResponse']['tns:roadResult'];
+
+        console.log('La valeur de roadResult est :', roadResult);
+      });
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async getChargingStationsAtIntervals(routeCoordinates: [number, number][], intervalKilometers: number): Promise<any> {
@@ -138,7 +180,7 @@ export class MapService {
   }
 
 
-  getRoadCoordinates(coordinates: [number, number][]): Promise<any> {
+  getRoadCoordinates(coordinates: [number, number][], chargingSpeed : number): Promise<any> {
 
     this.drawMarkers(coordinates)
 
@@ -155,14 +197,18 @@ export class MapService {
         if (this.readyState === 4) {
           if (this.status === 200) {
             const data = JSON.parse(this.responseText);
-            console.log(data)
             const encodedGeometry: string = data.routes[0].geometry;
             const distance= data.routes[0].summary.distance;
             const duration: string = data.routes[0].summary.duration;
-
             const decodedCoordinates: number[][] = polyline.decode(encodedGeometry);
-
             const fixedCoordinates = decodedCoordinates.map(coord => [coord[1], coord[0]]);
+
+            const segments = data.routes[0].segments;
+            console.log(segments)
+
+
+            console.log(data)
+
             resolve([fixedCoordinates, distance, duration]);
           } else {
             reject(new Error('Échec de la requête'));
