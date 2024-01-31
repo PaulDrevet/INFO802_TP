@@ -20,7 +20,6 @@ export class MapService {
     return this.vehicleService.getSelectedVehicle();
   }
 
-
   private map!: Map;
   private previousStartMarker!: Marker;
   private previousEndMarker!: Marker;

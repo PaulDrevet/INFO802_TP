@@ -49,7 +49,6 @@ export class CitiesComponent {
   }
 
   calculateRoad() {
-    console.log(this.selectedCityStart)
     if (this.selectedCityStart == undefined || this.selectedCityEnd == undefined) {
       this.messageService.add({ severity: 'info', summary: 'Erreur', detail: 'Sélectionnez 2 villes !' });
       return
@@ -74,7 +73,6 @@ export class CitiesComponent {
   onAddMarkerStartClick() {
     if (this.selectedCityStart) {
       const coordinates = this.selectedCityStart.geometry.coordinates;
-      console.log(coordinates)
       this.mapService.addMarkerStart(coordinates[0], coordinates[1]);
     }
   }
@@ -82,7 +80,6 @@ export class CitiesComponent {
   onAddMarkerEndClick() {
     if (this.selectedCityEnd) {
       const coordinates = this.selectedCityEnd.geometry.coordinates;
-      console.log(coordinates)
       this.mapService.addMarkerEnd(coordinates[0], coordinates[1]);
     }
   }
