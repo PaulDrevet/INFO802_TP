@@ -3,17 +3,13 @@ from spyne import rpc, ServiceBase, Iterable, Unicode
 
 class RoadService(ServiceBase):
 
-    @rpc(Unicode, Unicode, Unicode, Unicode, _returns=Unicode)
-    def road(self, distance, duration, autonomy, charging_speed):
-        print(distance, duration, autonomy, charging_speed)
-        distance = float(distance)
+    @rpc(Unicode, Unicode, Unicode, _returns=Unicode)
+    def road(self, duration, charging_speed, breaks):
         duration = float(duration)
-        autonomy = float(autonomy)
         charging_speed = float(charging_speed)
+        breaks = float(breaks)
 
-        charging_time = (distance - autonomy) / charging_speed
-
-        total_time = int(duration + charging_time)
+        total_time = duration + (charging_speed * breaks)
 
         return str(total_time)
 

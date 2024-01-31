@@ -68,9 +68,11 @@ export class MapService {
     ];
 
     const selectedVehicle = this.getVehicle();
+    console.log(selectedVehicle)
 
-    const autonomy = 100;
-    const chargingSpeed = 70;
+    const autonomy = selectedVehicle.__zone_symbol__value.range.best.combined;
+    const chargingTime = selectedVehicle.__zone_symbol__value.time;
+    console.log(autonomy, chargingTime)
 
     const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049&start=${coordinates[0]}&end=${coordinates[1]}`;
 
@@ -78,30 +80,29 @@ export class MapService {
     let data: any = await response.json();
     let road = data.features[0].geometry.coordinates;
     let steps = await this.getChargingStationsAtIntervals(road, autonomy);
-    let data1: any = await this.getRoadCoordinates(steps, chargingSpeed);
+    let data1: any = await this.getRoadCoordinates(steps);
     road = data1[0];
     const distance : number = Math.floor(data1[1]);
     const duration : number = Math.floor(data1[2]);
     const breaks : number = steps.length-2;
     this.drawRoad(road, '#ff0000', 3);
-    console.log(distance, duration, autonomy, chargingSpeed)
-    let time = await this.callSoap(distance, duration, autonomy, chargingSpeed)
+    console.log(distance, duration, autonomy, chargingTime)
+    let time = await this.callSoap(duration, chargingTime, breaks)
     console.log(distance, time, breaks)
     return [distance, time, breaks];
   }
 
 
-  public async callSoap(distance: number, duration: number, autonomy: number, chargingSpeed: number): Promise<number> {
+  public async callSoap(duration: number, chargingTime: number, breaks : number): Promise<number> {
     const soapEnvelope = `
     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
                       xmlns:exa="spyne.getTime">
       <soapenv:Header/>
       <soapenv:Body>
         <exa:road>
-          <exa:distance>${distance}</exa:distance>
           <exa:duration>${duration}</exa:duration>
-          <exa:autonomy>${autonomy}</exa:autonomy>
-          <exa:charging_speed>${chargingSpeed}</exa:charging_speed>
+          <exa:charging_speed>${chargingTime}</exa:charging_speed>
+          <exa:breaks>${breaks}</exa:breaks>
         </exa:road>
       </soapenv:Body>
     </soapenv:Envelope>
@@ -186,7 +187,7 @@ export class MapService {
   }
 
 
-  getRoadCoordinates(coordinates: [number, number][], chargingSpeed : number): Promise<any> {
+  getRoadCoordinates(coordinates: [number, number][]): Promise<any> {
 
     this.drawMarkers(coordinates)
 

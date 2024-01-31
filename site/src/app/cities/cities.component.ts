@@ -66,8 +66,6 @@ export class CitiesComponent {
     const distance = data[0];
     const time : number = data[1];
     this.breaks = data[2].toString()
-    console.log(time, distance, this.breaks)
-
     this.distance = Math.trunc(distance/1000).toString() + "km"
     this.time = Math.trunc(time/3600).toString() + "h" + Math.trunc(time/60%60).toString() + "min"
     this.loading = false

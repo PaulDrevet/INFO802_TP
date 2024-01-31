@@ -32,23 +32,24 @@ export class VehicleListComponent implements OnInit {
 
   visible: boolean = false;
 
-  constructor(private vehicleService: VehicleService) {}
+  constructor(private vehicleService: VehicleService) {
+  }
 
 
-  async showDetail(event : Event,vehicleId: any) {
+  async showDetail(event: Event, vehicleId: any) {
     event.stopPropagation();
     this.detailVehicle = await this.getVehicleDetail(vehicleId);
     this.visible = true;
   }
 
-  async shareVehicle(vehicleId : string) : Promise<void>{
-    const v = this.getVehicleDetail(vehicleId)
-    this.vehicleService.setSelectedVehicle(v);
+  async shareVehicle(vehicleId: string): Promise<void> {
+    const vehicleDetail = this.getVehicleDetail(vehicleId)
+    this.vehicleService.setSelectedVehicle(vehicleDetail);
   }
 
   ngOnInit() {
-    //this.getVehicleList();
     this.vehicleList = list;
+    //this.getVehicleList();
   }
 
   async getVehicleDetail(vehiculeId: any): Promise<any> {
@@ -67,7 +68,21 @@ export class VehicleListComponent implements OnInit {
     });
 
     try {
-      return await this.retrieveVehicleDetail(vehiculeId);
+      const v = await this.retrieveVehicleDetail(vehiculeId);
+
+      if (v.connectors && v.connectors.length > 0) {
+        let bestConnector = v.connectors[0]; // Assuming the first connector is the initial best
+
+        for (const connector of v.connectors) {
+          if (connector.time < bestConnector.time) {
+            bestConnector = connector;
+          }
+        }
+
+        v.time = bestConnector.time;
+        return v
+      }
+
     } catch (error) {
       console.log(error);
       throw error;
@@ -88,17 +103,7 @@ export class VehicleListComponent implements OnInit {
       edition
       chargetrip_version
     }
-    drivetrain {
-      type
-    }
     connectors {
-      standard
-      power
-      max_electric_power
-      time
-      speed
-    }
-    adapters {
       standard
       power
       max_electric_power
@@ -127,22 +132,12 @@ export class VehicleListComponent implements OnInit {
       top_speed
     }
     range {
-      provider
-      provider_is_estimated
-      worst{
-        highway
-        city
-        combined
-      }
       best {
         highway
         city
         combined
       }
-      chargetrip_range {
-        best
-        worst
-      }
+
     }
     media {
       image {
@@ -175,27 +170,14 @@ export class VehicleListComponent implements OnInit {
         thumbnail_height
         thumbnail_width
       }
-      video {
-        id
-        url
-      }
-      video_list {
-        id
-        url
-      }
     }
-    routing {
-      fast_charging_support
-    }
-    connect {
-      providers
-    }
+
   }
 }
-      ` )
+      `)
       .toPromise()
       .then((response: any) => {
-        const { data, error } = response;
+        const {data, error} = response;
         if (error) {
           console.log(error);
           throw error; // Propager l'erreur pour être capturée dans le bloc catch
@@ -225,7 +207,6 @@ export class VehicleListComponent implements OnInit {
   }
 
   retrieveVehicleList({page, size = 10, search = ''}: { page: number; size?: number; search?: string }): void {
-
     this.client
       .query(gql`
         query vehicleList($page: Int, $size: Int, $search: String) {
@@ -235,6 +216,13 @@ export class VehicleListComponent implements OnInit {
             search: $search,
           ) {
             id
+            connectors {
+              standard
+              power
+              max_electric_power
+              time
+              speed
+            }
             naming {
               make
               model
@@ -245,6 +233,7 @@ export class VehicleListComponent implements OnInit {
                 thumbnail_url
               }
             }
+
           }
         }
       `, {page, size, search})
@@ -255,7 +244,6 @@ export class VehicleListComponent implements OnInit {
           console.log(error);
         } else {
           this.vehicleList = data.vehicleList;
-          console.log(this.vehicleList)
         }
       })
       .catch((error: any) => {
