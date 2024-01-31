@@ -6,6 +6,8 @@ from wsgiref.simple_server import make_server
 from CORSMiddleware import CORSMiddleware
 from roadService import RoadService
 
+url = '127.0.0.1'
+
 application = Application([RoadService], 'spyne.getTime',
                           in_protocol=Soap11(validator='lxml'),
                           out_protocol=Soap11()
@@ -14,8 +16,8 @@ application = Application([RoadService], 'spyne.getTime',
 wsgi_application = WsgiApplication(application)
 app_with_cors = CORSMiddleware(wsgi_application)
 
-server = make_server('127.0.0.1', 8001, app_with_cors)
+server = make_server(url, 8001, app_with_cors)
 
-print("Server started at http://")
+print("Server started at http://" + url)
 
 server.serve_forever()

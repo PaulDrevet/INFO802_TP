@@ -9,6 +9,7 @@ import {NgIf} from "@angular/common";
 import { ToastModule } from 'primeng/toast';
 import {MessageService} from "primeng/api";
 import axios from "axios";
+import {VehicleService} from "../vehicle.service";
 
 interface AutoCompleteSuggestion {
   properties: {
@@ -41,29 +42,34 @@ export class CitiesComponent {
   selectedCityEnd: any;
   loading: boolean = false;
   distance : string | undefined;
-  duration : string | undefined;
+  time : string | undefined;
   breaks : string | undefined;
 
-  constructor(private mapService: MapService, private messageService: MessageService) {
+  constructor(private mapService: MapService, private messageService: MessageService, private vehiculeService : VehicleService) {
   }
 
-  calculate() {
+  calculateRoad() {
     console.log(this.selectedCityStart)
     if (this.selectedCityStart == undefined || this.selectedCityEnd == undefined) {
       this.messageService.add({ severity: 'info', summary: 'Erreur', detail: 'Sélectionnez 2 villes !' });
+      return
     }
-    else {
-      this.loading = true;
-      this.mapService.getRoad().then(data => this.update(data))
+    if (this.vehiculeService.getSelectedVehicle() == undefined){
+      this.messageService.add({ severity: 'info', summary: 'Erreur', detail: 'Sélectionnez un véhicule !' });
+      return
     }
+    this.loading = true;
+    this.mapService.processRoad().then(data => this.updateFront(data))
   }
 
-  update(data: [number, number, number]): void {
-    const minutes = data[0] / 60;
-    const hours = Math.floor(minutes / 60);
-    this.distance = Math.trunc(data[0]/60).toString() + "h" + Math.trunc(data[0]%60).toString() + "min"
-    this.duration = Math.trunc(data[1]/1000).toString() + "km"
+  updateFront(data: [number, number, number]): void {
+    const distance = data[0];
+    const time : number = data[1];
     this.breaks = data[2].toString()
+    console.log(time, distance, this.breaks)
+
+    this.distance = Math.trunc(distance/1000).toString() + "km"
+    this.time = Math.trunc(time/3600).toString() + "h" + Math.trunc(time/60%60).toString() + "min"
     this.loading = false
   }
 

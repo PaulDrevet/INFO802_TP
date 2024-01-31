@@ -58,9 +58,9 @@ export class MapService {
 
   }
 
-  async getRoad(): Promise<[number, number, number]> {
-    const startingPoint = this.previousStartMarker.getLngLat().toArray(); // Paris
-    const endPoint = this.previousEndMarker.getLngLat().toArray(); // Lyon
+  async processRoad(): Promise<[number, number, number]> {
+    const startingPoint = this.previousStartMarker.getLngLat().toArray();
+    const endPoint = this.previousEndMarker.getLngLat().toArray();
 
     let coordinates = [
       startingPoint,
@@ -86,21 +86,22 @@ export class MapService {
     this.drawRoad(road, '#ff0000', 3);
     console.log(distance, duration, autonomy, chargingSpeed)
     let time = await this.callSoap(distance, duration, autonomy, chargingSpeed)
+    console.log(distance, time, breaks)
     return [distance, time, breaks];
   }
 
 
-  public async callSoap(distance : number, duration : number, autonomy : number, chargingSpeed : number): Promise<any> {
+  public async callSoap(distance: number, duration: number, autonomy: number, chargingSpeed: number): Promise<number> {
     const soapEnvelope = `
     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
                       xmlns:exa="spyne.getTime">
       <soapenv:Header/>
       <soapenv:Body>
         <exa:road>
-        <exa:distance>${distance}</exa:distance>
-        <exa:duration>${duration}</exa:duration>
-        <exa:autonomy>${autonomy}</exa:autonomy>
-        <exa:charging_speed>${chargingSpeed}</exa:charging_speed>
+          <exa:distance>${distance}</exa:distance>
+          <exa:duration>${duration}</exa:duration>
+          <exa:autonomy>${autonomy}</exa:autonomy>
+          <exa:charging_speed>${chargingSpeed}</exa:charging_speed>
         </exa:road>
       </soapenv:Body>
     </soapenv:Envelope>
@@ -108,24 +109,29 @@ export class MapService {
 
     try {
       const response = await axios.post('http://127.0.0.1:8001', soapEnvelope, {
-        headers: {'Content-Type': 'text/xml'}
+        headers: { 'Content-Type': 'text/xml' }
       });
-      const result = await response.data
+      const result = await response.data;
 
-      parseString(result, { explicitArray: false, ignoreAttrs: true }, (err, result) => {
-        if (err) {
-          console.error('Erreur lors de l\'analyse XML :', err);
-          return;
-        }
-        const roadResult = result['soap11env:Envelope']['soap11env:Body']['tns:roadResponse']['tns:roadResult'];
+      return new Promise<number>((resolve, reject) => {
+        parseString(result, { explicitArray: false, ignoreAttrs: true }, (err, result) => {
+          if (err) {
+            console.error('Erreur lors de l\'analyse XML :', err);
+            reject(err);
+          }
 
-        console.log('La valeur de roadResult est :', roadResult);
+          const roadResult = result['soap11env:Envelope']['soap11env:Body']['tns:roadResponse']['tns:roadResult'];
+          const distanceValue = parseFloat(roadResult);
+          resolve(distanceValue);
+        });
       });
 
     } catch (error) {
       console.error(error);
+      throw error; // Propagate the error
     }
   }
+
 
   async getChargingStationsAtIntervals(routeCoordinates: [number, number][], intervalKilometers: number): Promise<any> {
 
@@ -198,7 +204,7 @@ export class MapService {
           if (this.status === 200) {
             const data = JSON.parse(this.responseText);
             const encodedGeometry: string = data.routes[0].geometry;
-            const distance= data.routes[0].summary.distance;
+            const distance : number = data.routes[0].summary.distance;
             const duration: string = data.routes[0].summary.duration;
             const decodedCoordinates: number[][] = polyline.decode(encodedGeometry);
             const fixedCoordinates = decodedCoordinates.map(coord => [coord[1], coord[0]]);
