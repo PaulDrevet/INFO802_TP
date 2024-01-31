@@ -68,11 +68,9 @@ export class MapService {
     ];
 
     const selectedVehicle = this.getVehicle();
-    console.log(selectedVehicle)
 
     const autonomy = selectedVehicle.__zone_symbol__value.range.best.combined;
     const chargingTime = selectedVehicle.__zone_symbol__value.time;
-    console.log(autonomy, chargingTime)
 
     const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049&start=${coordinates[0]}&end=${coordinates[1]}`;
 
@@ -128,8 +126,7 @@ export class MapService {
       });
 
     } catch (error) {
-      console.error(error);
-      throw error; // Propagate the error
+      throw error;
     }
   }
 
@@ -153,6 +150,7 @@ export class MapService {
         const query = `within_distance(geo_point_borne, GEOM'POINT(${coordA[0]} ${coordA[1]})', ${30000}m)`;
         const url = `https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/bornes-irve/records?limit=1&where=${encodeURIComponent(query)}`;
         const bornes = (await axios.get(url)).data.results;
+
         if (bornes.length > 0) {
           const nearestBorn = bornes[0]
           const latBorne = nearestBorn.geo_point_borne.lat;
@@ -204,17 +202,13 @@ export class MapService {
         if (this.readyState === 4) {
           if (this.status === 200) {
             const data = JSON.parse(this.responseText);
+
             const encodedGeometry: string = data.routes[0].geometry;
-            const distance : number = data.routes[0].summary.distance;
-            const duration: string = data.routes[0].summary.duration;
             const decodedCoordinates: number[][] = polyline.decode(encodedGeometry);
             const fixedCoordinates = decodedCoordinates.map(coord => [coord[1], coord[0]]);
 
-            const segments = data.routes[0].segments;
-            console.log(segments)
-
-
-            console.log(data)
+            const distance : number = data.routes[0].summary.distance;
+            const duration: string = data.routes[0].summary.duration;
 
             resolve([fixedCoordinates, distance, duration]);
           } else {
