@@ -32,6 +32,38 @@ export class VehicleListComponent implements OnInit {
 
   visible: boolean = false;
 
+  queryList = gql`
+        query vehicleList($page: Int, $size: Int, $search: String) {
+          vehicleList(
+            page: $page,
+            size: $size,
+            search: $search,
+          ) {
+            id
+            connectors {
+              standard
+              power
+              max_electric_power
+              time
+              speed
+            }
+            naming {
+              make
+              model
+              chargetrip_version
+            }
+            media {
+              image {
+                thumbnail_url
+              }
+            }
+
+          }
+        }
+      `;
+
+
+
   constructor(private vehicleService: VehicleService) {
   }
 
@@ -49,7 +81,7 @@ export class VehicleListComponent implements OnInit {
 
   ngOnInit() {
     this.vehicleList = list;
-    //this.getVehicleList();
+    this.getVehicleList();
   }
 
   async getVehicleDetail(vehiculeId: any): Promise<any> {
@@ -208,35 +240,7 @@ export class VehicleListComponent implements OnInit {
 
   retrieveVehicleList({page, size = 10, search = ''}: { page: number; size?: number; search?: string }): void {
     this.client
-      .query(gql`
-        query vehicleList($page: Int, $size: Int, $search: String) {
-          vehicleList(
-            page: $page,
-            size: $size,
-            search: $search,
-          ) {
-            id
-            connectors {
-              standard
-              power
-              max_electric_power
-              time
-              speed
-            }
-            naming {
-              make
-              model
-              chargetrip_version
-            }
-            media {
-              image {
-                thumbnail_url
-              }
-            }
-
-          }
-        }
-      `, {page, size, search})
+      .query(this.queryList, {page, size, search})
       .toPromise()
       .then((response: any) => {
         const {data, error} = response;
