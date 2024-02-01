@@ -14,6 +14,7 @@
   </div>
   <div class="p-2 mr-6 flex">
     <div *ngIf="breaks !== undefined" class="pl-10 self-center text-xl">
+      <p *ngIf="breaks == 0">Trajet de {{ distance }} en {{ time }} sans pause.</p>
       <p *ngIf="breaks == 1">Trajet de {{ distance }} en {{ time }} avec {{ breaks }} pause.</p>
       <p *ngIf="breaks > 1">Trajet de {{ distance }} en {{ time }} avec {{ breaks }} pauses.</p>
     </div>

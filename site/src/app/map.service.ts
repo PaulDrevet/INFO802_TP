@@ -78,7 +78,7 @@ export class MapService {
       this.drawMarkers(response.data.data.steps)
       this.drawRoad(response.data.data.road)
 
-      return [response.data.data.distance, response.data.data.duration, response.data.data.steps.length - 1]
+      return [response.data.data.distance, response.data.data.duration, response.data.data.steps.length - 2]
     } catch (error) {
       throw error
     }
