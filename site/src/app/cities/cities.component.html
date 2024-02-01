@@ -1,4 +1,4 @@
-<div id="citiesDiv" class="bg-white rounded-md w-11/12 h-full">
+<div id="citiesDiv" class="bg-white rounded-md w-11/12 h-full shadow-2xl">
   <div id="inputDiv" class="flex justify-around pt-6">
     <span class="p-float-label">
   <p-autoComplete (onSelect)="onAddMarkerStartClick()" [(ngModel)]="selectedCityStart" [suggestions]="suggestions"
@@ -12,15 +12,16 @@
     <label class="text-black">Ville d'arrivée</label>
   </span>
   </div>
-  <p-toast [life]="2000"></p-toast>
-  <p-button label="Calculer l'itinéraire" [loading]="loading" (onClick)="calculateRoad()"></p-button>
-  <div *ngIf="time !== undefined" class="flex pt-2">
-
-    <p>durée = {{time}}</p>
-    <p>distance = {{distance}}</p>
-    <p>pause = {{breaks}}</p>
+  <div class="p-2 mr-6 flex">
+    <div *ngIf="breaks !== undefined" class="pl-10 self-center text-xl">
+      <p *ngIf="breaks == 1">Trajet de {{ distance }} en {{ time }} avec {{ breaks }} pause.</p>
+      <p *ngIf="breaks > 1">Trajet de {{ distance }} en {{ time }} avec {{ breaks }} pauses.</p>
+    </div>
+    <div class="flex justify-end">
+      <p-toast [life]="2000"></p-toast>
+      <p-button label="Calculer l'itinéraire" [loading]="loading" (onClick)="calculateRoad()"></p-button>
+    </div>
   </div>
-
 </div>
 
 

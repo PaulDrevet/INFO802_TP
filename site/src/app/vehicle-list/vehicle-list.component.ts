@@ -81,7 +81,7 @@ export class VehicleListComponent implements OnInit {
 
   ngOnInit() {
     this.vehicleList = list;
-    this.getVehicleList();
+    //this.getVehicleList();
   }
 
   async getVehicleDetail(vehiculeId: any): Promise<any> {
@@ -103,7 +103,7 @@ export class VehicleListComponent implements OnInit {
       const v = await this.retrieveVehicleDetail(vehiculeId);
 
       if (v.connectors && v.connectors.length > 0) {
-        let bestConnector = v.connectors[0]; // Assuming the first connector is the initial best
+        let bestConnector = v.connectors[0];
 
         for (const connector of v.connectors) {
           if (connector.time < bestConnector.time) {
