@@ -5,6 +5,7 @@ import axios from "axios";
 import {parseString} from 'xml2js';
 import {replySuccess} from "../schema/SensibleSuccessSchema";
 import {readyMap} from "fastify-decorators/decorators";
+import xml2js from "xml2js";
 
 
 export default class ProcessRoadRoute extends AbstractRoute {
@@ -114,7 +115,6 @@ export default class ProcessRoadRoute extends AbstractRoute {
 
     calculateDistance(coordA: [number, number], coordB: [number, number]): number {
         const earthRadiusKm = 6371;
-
         const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
 
         const deltaLat = toRadians(coordB[0] - coordA[0]);
@@ -129,7 +129,7 @@ export default class ProcessRoadRoute extends AbstractRoute {
         return earthRadiusKm * c;
     }
 
-    async callSoap(duration: number, chargingTime: number, breaks: number): Promise<number> {
+    async callSoap(duration: number, chargingTime: number, breaks : number): Promise<number> {
         const soapEnvelope = `
     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
                       xmlns:exa="spyne.getTime">
@@ -146,16 +146,17 @@ export default class ProcessRoadRoute extends AbstractRoute {
 
         try {
             const response = await axios.post('http://127.0.0.1:8001', soapEnvelope, {
-                headers: {'Content-Type': 'text/xml'}
+                headers: { 'Content-Type': 'text/xml' }
             });
             const result = await response.data;
 
             return new Promise<number>((resolve, reject) => {
-                parseString(result, {explicitArray: false, ignoreAttrs: true}, (err, result) => {
+                parseString(result, { explicitArray: false, ignoreAttrs: true }, (err, result) => {
                     if (err) {
                         console.error('Erreur lors de l\'analyse XML :', err);
                         reject(err);
                     }
+
                     const roadResult = result['soap11env:Envelope']['soap11env:Body']['tns:roadResponse']['tns:roadResult'];
                     const distanceValue = parseFloat(roadResult);
                     resolve(distanceValue);
@@ -166,6 +167,5 @@ export default class ProcessRoadRoute extends AbstractRoute {
             throw error;
         }
     }
-
 
 }

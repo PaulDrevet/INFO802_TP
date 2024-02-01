@@ -2,10 +2,8 @@
 
 import {Injectable} from '@angular/core';
 import {Map, Marker} from 'maplibre-gl';
-import * as polyline from 'polyline';
 import axios from "axios";
 import {VehicleService} from "./vehicle.service";
-import { parseString } from 'xml2js';
 
 
 @Injectable({
@@ -13,8 +11,7 @@ import { parseString } from 'xml2js';
 })
 export class MapService {
 
-  constructor(private vehicleService : VehicleService){
-  }
+  constructor(private vehicleService : VehicleService){}
 
   getVehicle(){
     return this.vehicleService.getSelectedVehicle();
@@ -67,64 +64,25 @@ export class MapService {
       endPoint
     ];
 
+    const selectedVehicle = await this.getVehicle();
+
     const requestBody = {
-      coordinates: coordinates, // Remplace avec les vraies valeurs
-      autonomy: 100, // Remplace avec la vraie valeur
-      chargingTime: 2 // Remplace avec la vraie valeur
+      coordinates: coordinates,
+      autonomy: selectedVehicle.range.best.combined,
+      chargingTime: selectedVehicle.time
     };
 
     try {
       const response = await axios.post('http://localhost/road', requestBody);
+
       this.drawMarkers(response.data.data.steps)
       this.drawRoad(response.data.data.road)
 
-      console.log(response.data.data)
       return [response.data.data.distance, response.data.data.duration, response.data.data.steps.length - 1]
     } catch (error) {
+      throw error
     }
   }
-
-
-
-  public async callSoap(duration: number, chargingTime: number, breaks : number): Promise<number> {
-    const soapEnvelope = `
-    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                      xmlns:exa="spyne.getTime">
-      <soapenv:Header/>
-      <soapenv:Body>
-        <exa:road>
-          <exa:duration>${duration}</exa:duration>
-          <exa:charging_speed>${chargingTime}</exa:charging_speed>
-          <exa:breaks>${breaks}</exa:breaks>
-        </exa:road>
-      </soapenv:Body>
-    </soapenv:Envelope>
-  `;
-
-    try {
-      const response = await axios.post('http://127.0.0.1:8001', soapEnvelope, {
-        headers: { 'Content-Type': 'text/xml' }
-      });
-      const result = await response.data;
-
-      return new Promise<number>((resolve, reject) => {
-        parseString(result, { explicitArray: false, ignoreAttrs: true }, (err, result) => {
-          if (err) {
-            console.error('Erreur lors de l\'analyse XML :', err);
-            reject(err);
-          }
-
-          const roadResult = result['soap11env:Envelope']['soap11env:Body']['tns:roadResponse']['tns:roadResult'];
-          const distanceValue = parseFloat(roadResult);
-          resolve(distanceValue);
-        });
-      });
-
-    } catch (error) {
-      throw error;
-    }
-  }
-
 
   drawMarkers(coordinates: number[][]) {
     this.markers.forEach(marker => marker.remove());
