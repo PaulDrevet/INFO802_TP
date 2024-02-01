@@ -3,9 +3,9 @@ import S from "fluent-json-schema";
 import SensibleErrorSchema from "../schema/SensibleErrorSchema";
 import SensibleSuccessSchema from "../schema/SensibleSuccessSchema";
 import {FastifyReply, FastifyRequest} from "fastify";
-import GetCountriesRoad from "../routes/GetCountriesRoad";
+import GetCountriesRoute from "../routes/GetCountriesRoute";
 
-@Controller('/countries')
+@Controller('/country')
 export default class CountryController{
 
     @GET('/', {
@@ -17,6 +17,6 @@ export default class CountryController{
             }
         }
     })
-    public handlerGetCountries = async(req: FastifyRequest, reply: FastifyReply) => new GetCountriesRoad().run(req, reply);
+    public handlerGetCountries = async(req: FastifyRequest, reply: FastifyReply) => new GetCountriesRoute().run(req, reply);
 
 }

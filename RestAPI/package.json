@@ -13,11 +13,18 @@
         "@fastify/cors": "^8.2.0",
         "@fastify/sensible": "^5.2.0",
         "@types/node": "*",
-        "fastify": "^4.10.2",
+        "@types/polyline": "^0.1.32",
+        "@types/xml2js": "^0.4.14",
+        "fastify": "^4.26.0",
         "fastify-decorators": "^3.15.0",
         "fluent-json-schema": "^4.0.0",
         "ts-node": "^10.9.1",
         "tslog": "^3.2.2",
         "typescript": "^4.9.4"
+    },
+    "dependencies": {
+        "axios": "^1.6.7",
+        "polyline": "^0.2.0",
+        "xml2js": "^0.6.2"
     }
 }
