@@ -8,9 +8,16 @@ export default class GetVehiclesRoute extends AbstractRoute {
 
     run = async (req: FastifyRequest, reply: FastifyReply): Promise<any> => {
 
+        const api_key = process.env.GRAPHQL_CLIENT_ID;
+        const app_id = process.env.GRAPHQL_APP_ID;
+
+        if (!api_key || !app_id) {
+            return replyError(reply, { statusCode: 500, error: 'Missing API key or app ID' });
+        }
+
         const headers = {
-            'x-client-id': "65b21034082e3c09d1c2eeff",
-            'x-app-id': "65b21034082e3c09d1c2ef01"
+            'x-client-id': api_key,
+            'x-app-id': app_id
         };
 
         const client = createClient({

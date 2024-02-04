@@ -1,12 +1,22 @@
 import AbstractRoute from "./AbstractRoute";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { replySuccess } from "../schema/SensibleSuccessSchema";
+require('dotenv').config();
+
 
 export default class GetCountriesRoute extends AbstractRoute {
 
     run = async (req: FastifyRequest, reply: FastifyReply): Promise<any> => {
         try {
-            const api_key = '5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049';
+
+            const api_key = process.env.OPENROUTESERVICE_API_KEY;
+
+            if (!api_key) {
+                return replySuccess(reply, {
+                    statusCode: 500,
+                    data: 'Missing API key'
+                });
+            }
 
             let {input} = <{ input: string }>req.query;
 

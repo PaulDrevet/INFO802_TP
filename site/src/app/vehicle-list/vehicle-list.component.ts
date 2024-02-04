@@ -5,7 +5,6 @@ import {FormsModule} from "@angular/forms";
 import {DialogModule} from 'primeng/dialog';
 import {VehicleService} from "../vehicle.service";
 import {list} from './vehicles-json';
-import { createClient, fetchExchange, cacheExchange, gql } from 'urql';
 import axios from "axios";
 
 

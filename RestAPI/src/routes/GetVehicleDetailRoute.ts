@@ -3,15 +3,23 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { replySuccess } from "../schema/SensibleSuccessSchema";
 import { createClient, fetchExchange, cacheExchange, gql } from 'urql';
 import { replyError } from "../schema/SensibleErrorSchema";
+require('dotenv').config();
 
 export default class GetVehicleDetailRoute extends AbstractRoute {
 
     run = async (req: FastifyRequest, reply: FastifyReply): Promise<any> => {
         const { id } = <{ id: string }>req.params;
 
+        const api_key = process.env.GRAPHQL_CLIENT_ID;
+        const app_id = process.env.GRAPHQL_APP_ID;
+
+        if (!api_key || !app_id) {
+            return replyError(reply, { statusCode: 500, error: 'Missing API key or app ID' });
+        }
+
         const headers = {
-            'x-client-id': "65b21034082e3c09d1c2eeff",
-            'x-app-id': "65b21034082e3c09d1c2ef01"
+            'x-client-id': api_key,
+            'x-app-id': app_id
         };
 
         const client = createClient({
@@ -114,22 +122,27 @@ export default class GetVehicleDetailRoute extends AbstractRoute {
             } else {
                 const vehicleDetails = data.vehicle;
 
-                if (vehicleDetails.connectors && vehicleDetails.connectors.length > 0) {
-                    let bestConnector = vehicleDetails.connectors[0];
-
-                    for (const connector of vehicleDetails.connectors) {
-                        if (connector.time < bestConnector.time) {
-                            bestConnector = connector;
-                        }
-                    }
-
-                    vehicleDetails.time = bestConnector.time;
+                if (!vehicleDetails) {
+                    return replyError(reply, { statusCode: 404, error: 'Vehicle not found' });
                 }
-                console.log("vehicleDetails", vehicleDetails);
+
+                vehicleDetails.time = this.getBestTime(vehicleDetails.connectors);
                 return replySuccess(reply, { statusCode: 200, data: { vehicle: vehicleDetails } });
             }
         } catch (error) {
             console.log(error);
         }
+    }
+
+    getBestTime(connectors: any[]): number {
+        let bestTime = connectors[0].time;
+
+        for (const connector of connectors) {
+            if (connector.time < bestTime) {
+                bestTime = connector.time;
+            }
+        }
+
+        return bestTime;
     }
 }

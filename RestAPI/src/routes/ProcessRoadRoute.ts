@@ -11,17 +11,27 @@ import xml2js from "xml2js";
 export default class ProcessRoadRoute extends AbstractRoute {
 
     run = async (req: FastifyRequest, reply: FastifyReply): Promise<any> => {
+
+        const api_key = process.env.OPENROUTESERVICE_API_KEY;
+
+        if (!api_key) {
+            return replySuccess(reply, {
+                statusCode: 500,
+                data: 'Missing API key'
+            });
+        }
+
         let {coordinates, autonomy, chargingTime} = <{
             coordinates: [number, number][],
             autonomy: number,
             chargingTime: number
         }>req.body;
 
-        const firstRoad = await this.getFirstRoad(coordinates);
+        const firstRoad = await this.getFirstRoad(coordinates, api_key);
 
         const steps = await this.getChargingStationsAtIntervals(firstRoad, autonomy);
 
-        const data: any = await this.getSecondRoad(steps);
+        const data: any = await this.getSecondRoad(steps, api_key);
         const finalRoad = data[0];
         const distance = data[1];
         const duration = data[2];
@@ -41,14 +51,14 @@ export default class ProcessRoadRoute extends AbstractRoute {
 
     }
 
-    async getFirstRoad(coordinates: [number, number][]): Promise<any> {
+    async getFirstRoad(coordinates: [number, number][], apiKey : string): Promise<any> {
 
         const _start = coordinates[0];
         const _end = coordinates[1];
 
         let response = (await axios.get(`https://api.openrouteservice.org/v2/directions/driving-car`, {
             params: {
-                api_key: '5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049',
+                api_key: apiKey,
                 start: `${_start[0]},${_start[1]}`,
                 end: `${_end[0]},${_end[1]}`
             }
@@ -57,14 +67,14 @@ export default class ProcessRoadRoute extends AbstractRoute {
         return response.features.flatMap((feature: any) => feature.geometry.coordinates);
     }
 
-    async getSecondRoad(steps: [number, number][]): Promise<any> {
+    async getSecondRoad(steps: [number, number][], api_key : string): Promise<any> {
         let response = (await axios.post(`https://api.openrouteservice.org/v2/directions/driving-car/json`,
             {
                 coordinates: steps,
             },
             {
                 params: {
-                    api_key: '5b3ce3597851110001cf6248c033c235cd58408988708d1c480a3049',
+                    api_key: api_key,
                 }
             })).data
 
