@@ -1,6 +1,6 @@
 <div class="rounded-2xl">
   <p-listbox [options]="vehicleList" [listStyle]="{ 'max-height': getMaxHeight(), overflow: 'auto'}"
-             [style]="{width : '30rem'}" [(ngModel)]="selectedVehicle" (click)="shareVehicle(selectedVehicle.id)">
+             [style]="{width : '30rem'}" [(ngModel)]="selectedVehicle" (click)="selectVehicle(selectedVehicle.id)">
     <ng-template let-vehicle pTemplate="item">
       <div class="flex">
         <img src="{{vehicle.media.image.thumbnail_url}}" class="w-32 bg-gray-200 rounded-xl" alt="car image"/>

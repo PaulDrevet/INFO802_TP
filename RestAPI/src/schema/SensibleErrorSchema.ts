@@ -16,8 +16,8 @@ export default () =>
         .prop("error", S.string().required())
         .prop("messages", S.array().items(
             S.object()
-                .prop("lang", S.string().required())
-                .prop("message", S.string().required())
+                .prop("lang", S.string())
+                .prop("message", S.string())
         ))
 
 /**

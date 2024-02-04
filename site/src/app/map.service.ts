@@ -13,10 +13,6 @@ export class MapService {
 
   constructor(private vehicleService : VehicleService){}
 
-  getVehicle(){
-    return this.vehicleService.getSelectedVehicle();
-  }
-
   private map!: Map;
   private previousStartMarker!: Marker;
   private previousEndMarker!: Marker;
@@ -25,6 +21,11 @@ export class MapService {
   setMap(map: Map) {
     this.map = map;
   }
+
+  getVehicle(){
+    return this.vehicleService.getSelectedVehicle();
+  }
+
 
   addMarkerStart(lng: number, lat: number): Marker {
     if (this.previousStartMarker) {

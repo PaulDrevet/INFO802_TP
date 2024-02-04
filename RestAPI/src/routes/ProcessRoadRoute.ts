@@ -138,7 +138,7 @@ export default class ProcessRoadRoute extends AbstractRoute {
       <soapenv:Body>
         <exa:road>
           <exa:duration>${duration}</exa:duration>
-          <exa:charging_speed>${chargingTime}</exa:charging_speed>
+          <exa:charging_time>${chargingTime}</exa:charging_time>
           <exa:breaks>${breaks}</exa:breaks>
         </exa:road>
       </soapenv:Body>
