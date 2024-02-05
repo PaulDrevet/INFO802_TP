@@ -2,7 +2,6 @@ from spyne.application import Application
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
 from wsgiref.simple_server import make_server
-
 from CORSMiddleware import CORSMiddleware
 from roadService import RoadService
 

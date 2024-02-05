@@ -12,11 +12,13 @@
     <label class="text-black">Ville d'arrivée</label>
   </span>
   </div>
-  <div class="p-2 mr-6 flex">
-    <div *ngIf="breaks !== undefined" class="pl-10 self-center text-xl">
-      <p *ngIf="breaks == 0">Trajet de {{ distance }} en {{ time }} sans pause.</p>
-      <p *ngIf="breaks == 1">Trajet de {{ distance }} en {{ time }} avec {{ breaks }} pause.</p>
-      <p *ngIf="breaks > 1">Trajet de {{ distance }} en {{ time }} avec {{ breaks }} pauses.</p>
+  <div class="p-2 pt-4 mr-6 flex">
+    <div class="w-max flex-grow">
+      <div *ngIf="breaks !== undefined" class="pl-10 self-center text-xl">
+        <p *ngIf="breaks == 0">Trajet de {{ distance }} en {{ time }} sans pause.</p>
+        <p *ngIf="breaks == 1">Trajet de {{ distance }} en {{ time }} avec {{ breaks }} pause.</p>
+        <p *ngIf="breaks > 1">Trajet de {{ distance }} en {{ time }} avec {{ breaks }} pauses.</p>
+      </div>
     </div>
     <div class="flex justify-end">
       <p-toast [life]="2000"></p-toast>

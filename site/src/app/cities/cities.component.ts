@@ -56,7 +56,7 @@ export class CitiesComponent {
       this.messageService.add({ severity: 'info', summary: 'Erreur', detail: 'Sélectionnez un véhicule !' });
       return
     }
-    //this.loading = true;
+    this.loading = true;
     this.mapService.processRoad().then(data => this.updateFront(data));
   }
 
@@ -84,13 +84,12 @@ export class CitiesComponent {
   }
 
   async getCountries(event: AutoCompleteCompleteEvent) {
+
     const response = await axios.get('http://localhost/country', {
       params: {
         input: event.query
       }
     });
-
-    console.log(response.data.data)
 
     this.suggestions = response.data.data;
   }

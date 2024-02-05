@@ -46,7 +46,6 @@ export class VehicleListComponent implements OnInit {
   async selectVehicle(vehicleId: string): Promise<void> {
     const vehicleDetail = await this.getVehicleDetail(vehicleId);
     this.vehicleService.setSelectedVehicle(vehicleDetail);
-    console.log(vehicleDetail);
   }
 
   ngOnInit() {
@@ -57,6 +56,7 @@ export class VehicleListComponent implements OnInit {
     const vehicleDetail = await axios.get('http://localhost/vehicle/' + vehiculeId);
     return vehicleDetail.data.data.vehicle;
   }
+
   async getVehicleList (){
     //const response = await axios.get('http://localhost/vehicle');
     //this.vehicleList = response.data.data.vehicles;
