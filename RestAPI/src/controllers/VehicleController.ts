@@ -1,10 +1,7 @@
-import {Controller, GET, POST} from "fastify-decorators";
-import S from "fluent-json-schema";
+import {Controller, GET} from "fastify-decorators";
 import SensibleErrorSchema from "../schema/SensibleErrorSchema";
 import SensibleSuccessSchema from "../schema/SensibleSuccessSchema";
 import {FastifyReply, FastifyRequest} from "fastify";
-import GetCountriesRoute from "../routes/GetCountriesRoute";
-import ProcessRoadRoute from "../routes/ProcessRoadRoute";
 import GetVehiclesRoute from "../routes/GetVehiclesRoute";
 import GetVehicleDetailRoute from "../routes/GetVehicleDetailRoute";
 

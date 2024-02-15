@@ -1,9 +1,8 @@
-import {Controller, GET, POST} from "fastify-decorators";
+import {Controller, POST} from "fastify-decorators";
 import S from "fluent-json-schema";
 import SensibleErrorSchema from "../schema/SensibleErrorSchema";
 import SensibleSuccessSchema from "../schema/SensibleSuccessSchema";
 import {FastifyReply, FastifyRequest} from "fastify";
-import GetCountriesRoute from "../routes/GetCountriesRoute";
 import ProcessRoadRoute from "../routes/ProcessRoadRoute";
 
 @Controller('/road')

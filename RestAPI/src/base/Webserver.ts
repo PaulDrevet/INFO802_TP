@@ -2,7 +2,6 @@ import Fastify, {FastifyInstance} from "fastify";
 import {bootstrap} from "fastify-decorators";
 import {resolve} from "path";
 import Main from "../Main";
-import TabWriter from "../utils/TabWriter";
 
 interface IWebserver {
     port: number;
