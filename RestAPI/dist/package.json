@@ -8,6 +8,7 @@
         "build": "tsc -p .",
         "start": "node dist/src/index.js"
     },
+    "type": "module",
     "license": "ISC",
     "devDependencies": {
         "@fastify/cors": "^8.2.0",
