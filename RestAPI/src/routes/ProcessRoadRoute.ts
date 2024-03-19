@@ -34,7 +34,6 @@ export default class ProcessRoadRoute extends AbstractRoute {
         const duration = data[2];
 
         const durationWithSteps = await this.callSoap(duration, chargingTime, steps.length - 2)
-        console.log(steps.length - 2)
 
         replySuccess(reply, {
             statusCode: 200,
